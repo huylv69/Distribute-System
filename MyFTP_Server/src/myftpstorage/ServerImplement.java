@@ -116,6 +116,13 @@ public class ServerImplement extends UnicastRemoteObject implements ServerInterf
     }
 
     @Override
+    public void delList(List<File> delList) throws IOException {
+        for (int i = 0; i < delList.size(); i++) {
+            delList.get(i).delete();
+        }
+    }
+
+    @Override
     public void merge(List<File> files, File dst) throws Exception {
         FileOutputStream os = new FileOutputStream(dst);
         byte[] buffer = new byte[FILE_SPLIT_SIZE];
