@@ -180,7 +180,7 @@ public class ScreenServer extends javax.swing.JFrame {
                     }
                 }
                 // Nếu thư mục tồn tại, trả về địa chỉ ip của máy chủ RMI
-                System.getProperty("java.rmi.server.hostname " + getIpServer());
+//                System.getProperty("java.rmi.server.hostname " + getIpServer());
                 System.out.println("IP server: " + getIpServer());
                 btn_ChooseFile.setText(defaultFile.getAbsolutePath());
                 // Cài đặt quản lý an ninh mạng
