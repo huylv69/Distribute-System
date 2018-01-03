@@ -23,8 +23,7 @@ public class MyFTP_Client {
      */
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
-        ScreenMain screenMain = new ScreenMain();
-        screenMain.setVisible(true);
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -48,6 +47,8 @@ public class MyFTP_Client {
         }
         //</editor-fold>
         //</editor-fold>
+        ScreenMain screenMain = new ScreenMain();
+        screenMain.setVisible(true);
     }
 
 }
