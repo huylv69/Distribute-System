@@ -48,7 +48,7 @@ public class ScreenMain extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        text_IPServer = new javax.swing.JTextField();
+        txtIPServer = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         btn_ChooseFile = new javax.swing.JToggleButton();
         btn_Connect = new javax.swing.JToggleButton();
@@ -64,11 +64,11 @@ public class ScreenMain extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel2.setText("IP:");
 
-        text_IPServer.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        text_IPServer.setText("localhost");
-        text_IPServer.addActionListener(new java.awt.event.ActionListener() {
+        txtIPServer.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        txtIPServer.setText("localhost:1099");
+        txtIPServer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                text_IPServerActionPerformed(evt);
+                txtIPServerActionPerformed(evt);
             }
         });
 
@@ -121,7 +121,7 @@ public class ScreenMain extends javax.swing.JFrame {
                                 .addComponent(btn_Close, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(btn_ChooseFile, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(text_IPServer, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtIPServer, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 52, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -131,7 +131,7 @@ public class ScreenMain extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(text_IPServer, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtIPServer, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -147,9 +147,9 @@ public class ScreenMain extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void text_IPServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_IPServerActionPerformed
+    private void txtIPServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIPServerActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_text_IPServerActionPerformed
+    }//GEN-LAST:event_txtIPServerActionPerformed
 
     private void btn_ChooseFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ChooseFileActionPerformed
         fileChooser = new JFileChooser();
@@ -170,8 +170,8 @@ public class ScreenMain extends javax.swing.JFrame {
 
     private void btn_ConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ConnectActionPerformed
         try {
-            if (text_IPServer.getText().equals("")) {
-                JOptionPane.showMessageDialog(btn_Connect, "bạn chưa nhập địa chỉ server", "lỗi kết nối", JOptionPane.ERROR_MESSAGE);
+            if (txtIPServer.getText().equals("")) {
+                JOptionPane.showMessageDialog(btn_Connect, "Require insert IP server", "lỗi kết nối", JOptionPane.ERROR_MESSAGE);
             } else if (connect()) {
                 open();
             }
@@ -221,8 +221,8 @@ public class ScreenMain extends javax.swing.JFrame {
     }
 
     private boolean connect() throws NotBoundException, MalformedURLException, RemoteException {
-        System.out.println("Connecting to server ....");
-        String url = "rmi://localhost:3000/server";
+        System.out.println("Connecting to server ...." + txtIPServer.getText());
+        String url = "rmi://" + txtIPServer.getText() + "/server";
         System.out.println(url);
         this.server = (ServerInterface) Naming.lookup(url);
         System.out.println("IP device:" + getIp());
@@ -230,11 +230,15 @@ public class ScreenMain extends javax.swing.JFrame {
     }
 
     private void open() throws RemoteException, IOException {
-        String fileClientPath = fileChooser.getSelectedFile().getAbsolutePath();
-        System.out.println(fileClientPath);
-        ScreenClient t = new ScreenClient(fileClientPath, this.server);
-        t.setVisible(true);
-        this.setVisible(false);
+        if (fileChooser == null) {
+            JOptionPane.showMessageDialog(null, "Require select client folder ", "Warning", WIDTH);
+        } else {
+            String fileClientPath = fileChooser.getSelectedFile().getAbsolutePath();
+            System.out.println(fileClientPath);
+            ScreenClient t = new ScreenClient(fileClientPath, this.server);
+            t.setVisible(true);
+            this.setVisible(false);
+        }
     }
 
     // Hàm xác định địa chỉ IP máy chủ địa phương
@@ -273,6 +277,6 @@ public class ScreenMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private static javax.swing.JTextField text_IPServer;
+    private static javax.swing.JTextField txtIPServer;
     // End of variables declaration//GEN-END:variables
 }

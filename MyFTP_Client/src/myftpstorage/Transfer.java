@@ -21,21 +21,21 @@ import java.util.List;
  * @author HuyLV
  */
 public class Transfer {
-    
+
     private final int FILE_SPLIT_SIZE = 1024 * 1024 * 2;//2MB
     private ServerInterface server;
     private ScreenClient screenClient;
     private Transmission currentTrans;
-    
+
     Transfer(ServerInterface server, ScreenClient client) {
         this.screenClient = client;
         this.server = server;
     }
-    
+
     public Transmission getTransmission() {
         return this.currentTrans;
     }
-    
+
     void upload(File src, File dst) throws IOException {
         // Split to upload 
         List<File> clientFileParts = this.splitFile("client_tmp", src);
@@ -44,7 +44,7 @@ public class Transfer {
         this.currentTrans = transmission;
         this.processThread(transmission);
     }
-    
+
     void download(File src, File dst) throws Exception {
         System.out.println("Download " + src + " to " + dst);
         List<File> serverFileParts = this.server.split(src);
@@ -52,7 +52,6 @@ public class Transfer {
                 Transmission.DOWNLOAD, serverFileParts, dst, src);
         this.currentTrans = transmission;
         this.processThread(transmission);
-        
     }
 
 // Using thread to process transmission
@@ -66,7 +65,7 @@ public class Transfer {
         });
         thread.start();
     }
-    
+
     private void process(Transmission transmission) throws Exception {
         File clientFilePart = null;
         File serverFilePart = null;
@@ -98,9 +97,8 @@ public class Transfer {
             } while (clientFilePart != null);
             List<File> delList = transmission.getTransferredFileParts();
             this.server.delList(delList);
-            screenClient.updateProgress("Done!");
-            Thread.sleep(3000);
             screenClient.resetGUI();
+            screenClient.updateProgress("Done!");
         } else { // DOWNLOAD
             do {
                 if (transmission.getStatus() == transmission.PAUSE) {
@@ -124,12 +122,11 @@ public class Transfer {
             } while (serverFilePart != null);
             List<File> delList = transmission.getTransferredFileParts();
             delList(delList);
-            screenClient.updateProgress("Done!");
-            Thread.sleep(3000);
             screenClient.resetGUI();
+            screenClient.updateProgress("Done!");
         }
     }
-    
+
     private void transfer(InputStream is, OutputStream os) throws IOException {
         byte[] buffer = new byte[1024 * 1024];
         int c = 0;
@@ -139,7 +136,7 @@ public class Transfer {
         is.close();
         os.close();
     }
-    
+
     private List<File> splitFile(String dir, File f) throws IOException {
         ArrayList<File> output = new ArrayList<>();
         int partCounter = 0;
@@ -161,7 +158,7 @@ public class Transfer {
         bis.close();
         return output;
     }
-    
+
     private void mergeFiles(List<File> files, File dst) throws IOException {
         FileOutputStream os = new FileOutputStream(dst);
         byte[] buffer = new byte[FILE_SPLIT_SIZE];
@@ -176,7 +173,7 @@ public class Transfer {
         }
         os.close();
     }
-    
+
     private void delList(List<File> delList) {
         for (int i = 0; i < delList.size(); i++) {
             delList.get(i).delete();

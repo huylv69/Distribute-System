@@ -461,7 +461,6 @@ public final class ScreenClient extends javax.swing.JFrame {
                     }
                     File src = new File(clientRoot + "\\" + currentClientDir + "\\" + currentClientFile);
                     this.transfer.upload(src, dst);
-
                 } catch (IOException ex) {
                     Logger.getLogger(ScreenClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -901,7 +900,7 @@ public final class ScreenClient extends javax.swing.JFrame {
         tableClient.setModel(tm);
         TableColumnModel tcm = tableClient.getColumnModel();
         TableColumn tc = tcm.getColumn(0);
-        tc.setMinWidth(400);
+        tc.setMinWidth(250);
         tc.setCellRenderer(new FileTableClientCellRenderer());
     }
 
@@ -997,7 +996,7 @@ public final class ScreenClient extends javax.swing.JFrame {
         tableServer.setModel(tm);
         TableColumnModel tcm = tableServer.getColumnModel();
         TableColumn tc = tcm.getColumn(0);
-        tc.setMinWidth(400);
+        tc.setMinWidth(250);
         tc.setCellRenderer(new FileTableServerCellRenderer());
     }
 

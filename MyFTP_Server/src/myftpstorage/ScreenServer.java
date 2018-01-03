@@ -5,16 +5,25 @@
  */
 package myftpstorage;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import static java.rmi.server.UnicastRemoteObject.unexportObject;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -30,12 +39,15 @@ public class ScreenServer extends javax.swing.JFrame {
     private boolean isStart;
     private int syncState;
     private JFileChooser fileChooser;
+    private boolean useLocal;
 
     /**
      * Creates new form ScreenServer
      */
     public ScreenServer() {
         initComponents();
+//        int choice = JOptionPane.showConfirmDialog(null, "Do you want to use Local?");
+//        useLocal = choice == JOptionPane.YES_OPTION; // Chọn máy chủ cục bộ
     }
 
     /**
@@ -52,6 +64,7 @@ public class ScreenServer extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         btn_ChooseFile = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        txtIP = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -87,57 +100,69 @@ public class ScreenServer extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("MYFTP SEVER");
 
+        txtIP.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtIP.setForeground(new java.awt.Color(255, 0, 0));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(110, Short.MAX_VALUE)
+                .addContainerGap(71, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_ChooseFile, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btn_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
-                        .addComponent(btn_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btn_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtIP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btn_ChooseFile, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE))))
                 .addGap(69, 69, 69))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43)
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_ChooseFile, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                    .addComponent(btn_ChooseFile, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtIP, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(53, 53, 53))
+                .addGap(32, 32, 32))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StopActionPerformed
-        btn_Stop.addActionListener((java.awt.event.ActionEvent e) -> {
+        int choice = JOptionPane.showConfirmDialog(null, " You are sure to stop application?");
+        if (choice == JOptionPane.YES_OPTION) {
+            isStart = false;
+            syncState = 0;
             try {
-                if (btn_Stop.getText().equalsIgnoreCase("Stop")) {
-                    stop();
-                    btn_Start.setEnabled(true);
-                    btn_Stop.setEnabled(false);
-                    btn_Start.setText("Start");
-                    btn_Stop.setText("Stopped");
-                    btn_ChooseFile.setText("E:\\server");
-                }
-            } catch (Exception ex) {
-                System.out.println("Error: " + ex);
+                // Loại bỏ ràng buộc trong this registry
+                rmiRegistry.unbind("server");
+                unexportObject(server, true);
+                // Removes the remote object, obj, from the RMI runtime.
+                unexportObject(rmiRegistry, true);
+            } catch (RemoteException | NotBoundException ex) {
+                Logger.getLogger(ScreenServer.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });
+            btn_Start.setEnabled(true);
+            btn_Stop.setEnabled(false);
+            btn_Start.setText("Start");
+            btn_Stop.setText("Stopped");
+            btn_ChooseFile.setText("E:\\server");
+        }
     }//GEN-LAST:event_btn_StopActionPerformed
 
     private void btn_StartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StartActionPerformed
@@ -244,10 +269,11 @@ public class ScreenServer extends javax.swing.JFrame {
 
     public void start() throws Exception {
         // registry port 3000
-        rmiRegistry = LocateRegistry.createRegistry(3000);
+        rmiRegistry = LocateRegistry.createRegistry(1099);
         //Thay thế các ràng buộc, rebind() để tránh lỗi trong trường hợp "server" đã tồn tại trong RMI Registry
         rmiRegistry.rebind("server", server);
-        JOptionPane.showMessageDialog(null, "Server Started");
+        JOptionPane.showMessageDialog(null, "Server Started with IP:  " + getIpServer() + ":1099");
+        txtIP.setText("IP Server : " + getIpServer() + ":1099");
         isStart = true;
     }
 
@@ -262,6 +288,15 @@ public class ScreenServer extends javax.swing.JFrame {
             // Removes the remote object, obj, from the RMI runtime.
             unexportObject(rmiRegistry, true);
         }
+    }
+
+    public String getExternalIp() throws IOException {
+        URL whatismyip = new URL("http://checkip.amazonaws.com");
+        BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+
+        String ip = in.readLine(); //you get the IP as a String
+        System.out.println(ip);
+        return ip;
     }
 
     // Hàm xác định địa chỉ IP máy chủ địa phương
@@ -299,5 +334,6 @@ public class ScreenServer extends javax.swing.JFrame {
     private javax.swing.JButton btn_Stop;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel txtIP;
     // End of variables declaration//GEN-END:variables
 }
