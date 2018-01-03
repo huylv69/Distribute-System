@@ -110,6 +110,7 @@ public final class ScreenClient extends javax.swing.JFrame {
         pause = new javax.swing.JButton();
         process = new javax.swing.JLabel();
         stop = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -243,7 +244,6 @@ public final class ScreenClient extends javax.swing.JFrame {
         });
 
         process.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        process.setText("Process: ");
 
         stop.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         stop.setText("Stop");
@@ -252,6 +252,9 @@ public final class ScreenClient extends javax.swing.JFrame {
                 stopActionPerformed(evt);
             }
         });
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel4.setText("Processing:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -308,8 +311,10 @@ public final class ScreenClient extends javax.swing.JFrame {
                         .addGap(101, 101, 101)
                         .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 985, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(185, 185, 185)
-                        .addComponent(process, javax.swing.GroupLayout.PREFERRED_SIZE, 782, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(194, 194, 194)
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(process, javax.swing.GroupLayout.PREFERRED_SIZE, 721, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -340,14 +345,20 @@ public final class ScreenClient extends javax.swing.JFrame {
                     .addComponent(delete))
                 .addGap(14, 14, 14)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(pause)
-                    .addComponent(resume)
-                    .addComponent(stop))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(process)
-                .addGap(22, 22, 22))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(pause)
+                            .addComponent(resume)
+                            .addComponent(stop))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(process))
+                        .addGap(20, 20, 20))))
         );
 
         pack();
@@ -434,7 +445,26 @@ public final class ScreenClient extends javax.swing.JFrame {
             int result = JOptionPane.showConfirmDialog(this, "The file \"" + currentClientFile + "\" already exists, Do you want to override it?",
                     "alert", JOptionPane.YES_NO_CANCEL_OPTION);
             if (result == JOptionPane.YES_OPTION) {
-                // ghi đè
+                try {
+                    // ghi đè
+                    this.server.deleteFile(currentServerDir + currentClientFile);
+                    this.resume.setEnabled(false);
+                    this.pause.setEnabled(true);
+                    this.stop.setEnabled(true);
+                    upload.setEnabled(false);
+                    download.setEnabled(false);
+                    File dst = null;
+                    try {
+                        dst = server.getFile(dstName);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ScreenClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    File src = new File(clientRoot + "\\" + currentClientDir + "\\" + currentClientFile);
+                    this.transfer.upload(src, dst);
+
+                } catch (IOException ex) {
+                    Logger.getLogger(ScreenClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else {
                 return;
             }
@@ -444,7 +474,6 @@ public final class ScreenClient extends javax.swing.JFrame {
             this.stop.setEnabled(true);
             upload.setEnabled(false);
             download.setEnabled(false);
-//            File dst = new File(dstName);
             File dst = null;
             try {
                 dst = server.getFile(dstName);
@@ -452,7 +481,6 @@ public final class ScreenClient extends javax.swing.JFrame {
                 Logger.getLogger(ScreenClient.class.getName()).log(Level.SEVERE, null, ex);
             }
             File src = new File(clientRoot + "\\" + currentClientDir + "\\" + currentClientFile);
-            System.out.println(currentClientFile);
             try {
                 this.transfer.upload(src, dst);
             } catch (IOException ex) {
@@ -487,7 +515,30 @@ public final class ScreenClient extends javax.swing.JFrame {
             int result = JOptionPane.showConfirmDialog(this, "The file \"" + currentServerFile + "\" already exists, Do you want to override it?",
                     "alert", JOptionPane.YES_NO_CANCEL_OPTION);
             if (result == JOptionPane.YES_OPTION) {
-                // ghi đè
+                try {
+                    // ghi đè
+                    new File(clientRoot + "\\" + currentClientDir + "\\" + currentServerFile).delete();
+                    this.resume.setEnabled(false);
+                    this.pause.setEnabled(true);
+                    this.stop.setEnabled(true);
+                    download.setEnabled(false);
+                    upload.setEnabled(false);
+                    File dst = new File(clientRoot + "\\" + currentClientDir + "\\" + dstName);
+                    File src = null;
+                    try {
+                        src = this.server.getFile(currentServerFile);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ScreenClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    System.out.println(currentServerFile);
+
+                    this.transfer.download(src, dst);
+
+                } catch (IOException ex) {
+                    Logger.getLogger(ScreenClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(ScreenClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else {
                 return;
             }
@@ -950,12 +1001,10 @@ public final class ScreenClient extends javax.swing.JFrame {
         tc.setCellRenderer(new FileTableServerCellRenderer());
     }
 
-    public void updateProgress(String str, long progress, long size) {
+    public void updateProgress(String str) {
 
         process.setVisible(true);
-        progress = progress / 1024;
-        size = size / 1024;
-        process.setText(str + " : " + progress + "/" + size + " KB");
+        process.setText(str);
 
         //System.out.println(transferThread.progress + transferThread.size);    
     }
@@ -1110,6 +1159,7 @@ public final class ScreenClient extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;

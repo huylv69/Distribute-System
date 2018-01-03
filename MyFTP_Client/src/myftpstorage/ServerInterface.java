@@ -27,6 +27,8 @@ public interface ServerInterface extends Remote {
 
     public List<File> split(File file) throws Exception;
 
+    public void delList(List<File> list) throws IOException;
+
     public ArrayList<String> getServerFileList(String directory) throws IOException;
 
     public OutputStream getOutputStreamFile(File file) throws Exception;
