@@ -212,7 +212,6 @@ public class ScreenServer extends javax.swing.JFrame {
             btn_Start.setEnabled(false);
             btn_Stop.setEnabled(true);
         } catch (Exception e) {
-            System.out.println("error: " + e);
         }
     }//GEN-LAST:event_btn_StartActionPerformed
 
@@ -268,7 +267,7 @@ public class ScreenServer extends javax.swing.JFrame {
     }
 
     public void start() throws Exception {
-        System.setProperty("java.rmi.server.hostname " , getExternalIp());
+        System.setProperty("java.rmi.server.hostname " ,"127.0.1.1");
 
         // registry port 3000
         rmiRegistry = LocateRegistry.createRegistry(1099);

@@ -171,7 +171,7 @@ public class ScreenMain extends javax.swing.JFrame {
     private void btn_ConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ConnectActionPerformed
         try {
             if (txtIPServer.getText().equals("")) {
-                JOptionPane.showMessageDialog(btn_Connect, "Require insert IP server", "lỗi kết nối", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(btn_Connect, "Require insert IP server", "Warning", JOptionPane.ERROR_MESSAGE);
             } else if (connect()) {
                 open();
             }
