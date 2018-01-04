@@ -5,6 +5,7 @@
  */
 package myftpstorage;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -18,7 +19,7 @@ public class MyFTP_Server {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // TODO code application logic here
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

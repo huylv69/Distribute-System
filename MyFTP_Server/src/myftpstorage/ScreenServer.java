@@ -43,11 +43,11 @@ public class ScreenServer extends javax.swing.JFrame {
     /**
      * Creates new form ScreenServer
      */
-    public ScreenServer() {
+    public ScreenServer() throws IOException {
         initComponents();
 //        int choice = JOptionPane.showConfirmDialog(null, "Do you want to use Local?");
 //        useLocal = choice == JOptionPane.YES_OPTION; // Chọn máy chủ cục bộ
-        System.setProperty("java.rmi.server.hostname ", "127.0.0.1");
+        System.setProperty("java.rmi.server.hostname ", getExternalIp());
     }
 
     /**
@@ -261,7 +261,11 @@ public class ScreenServer extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new ScreenServer().setVisible(true);
+            try {
+                new ScreenServer().setVisible(true);
+            } catch (IOException ex) {
+                Logger.getLogger(ScreenServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
     }
 

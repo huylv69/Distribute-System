@@ -221,9 +221,9 @@ public class ScreenMain extends javax.swing.JFrame {
 
     private boolean connect() throws NotBoundException, MalformedURLException, RemoteException {
         System.out.println("Connecting to server ...." + txtIPServer.getText());
-        String url = "rmi://" + txtIPServer.getText() + "/server";
+        String url = "rmi://" + "45.77.42.51" + "/server";
         System.out.println(url);
-        this.server = (ServerInterface) Naming.lookup("server");
+        this.server = (ServerInterface) Naming.lookup(url);
         System.out.println("IP device:" + getIp());
         return true;
     }
