@@ -220,12 +220,10 @@ public class ScreenMain extends javax.swing.JFrame {
     }
 
     private boolean connect() throws NotBoundException, MalformedURLException, RemoteException {
-//        System.setProperty("java.rmi.server.hostname", "45.77.42.51");
         System.out.println("Connecting to server ...." + txtIPServer.getText());
-        Registry registry = LocateRegistry.getRegistry("45.77.42.51", 1099);
-        String url = "rmi://" + "45.77.42.51:1099" + "/server";
+        String url = "rmi://" + txtIPServer.getText() + "/server";
         System.out.println(url);
-        this.server = (ServerInterface) registry.lookup("server");
+        this.server = (ServerInterface) Naming.lookup("server");
         System.out.println("IP device:" + getIp());
         return true;
     }

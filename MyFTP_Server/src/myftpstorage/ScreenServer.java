@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
@@ -48,6 +47,7 @@ public class ScreenServer extends javax.swing.JFrame {
         initComponents();
 //        int choice = JOptionPane.showConfirmDialog(null, "Do you want to use Local?");
 //        useLocal = choice == JOptionPane.YES_OPTION; // Chọn máy chủ cục bộ
+        System.setProperty("java.rmi.server.hostname ", "localhost");
     }
 
     /**
@@ -180,7 +180,6 @@ public class ScreenServer extends javax.swing.JFrame {
                     }
                 }
                 // Nếu thư mục tồn tại, trả về địa chỉ ip của máy chủ RMI
-                System.getProperty("java.rmi.server.hostname " + getIpServer());
                 System.out.println("IP server: " + getIpServer());
                 btn_ChooseFile.setText(defaultFile.getAbsolutePath());
                 // Cài đặt quản lý an ninh mạng
@@ -267,10 +266,8 @@ public class ScreenServer extends javax.swing.JFrame {
     }
 
     public void start() throws Exception {
-//        System.setProperty("java.rmi.server.hostname ", "127.0.1.1");
-        System.setProperty("java.security.policy", "//securityPolicy");
+//        System.setProperty("java.security.policy", "file:///securityPolicy");
 //        rmiRegistry = LocateRegistry.getRegistry(getExternalIp(), 1099);
-        // registry port 3000
         rmiRegistry = LocateRegistry.createRegistry(1099);
         //Thay thế các ràng buộc, rebind() để tránh lỗi trong trường hợp "server" đã tồn tại trong RMI Registry
         rmiRegistry.rebind("server", server);
