@@ -5,7 +5,6 @@
  */
 package myftpstorage;
 
-import java.awt.HeadlessException;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -15,6 +14,8 @@ import java.net.SocketException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -175,9 +176,7 @@ public class ScreenMain extends javax.swing.JFrame {
             } else if (connect()) {
                 open();
             }
-        } catch (HeadlessException | MalformedURLException | NotBoundException | RemoteException e) {
-            System.out.println("Cannot start!" + e);
-        } catch (IOException ex) {
+        } catch (IOException | NotBoundException ex) {
             Logger.getLogger(ScreenMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btn_ConnectActionPerformed
@@ -221,10 +220,12 @@ public class ScreenMain extends javax.swing.JFrame {
     }
 
     private boolean connect() throws NotBoundException, MalformedURLException, RemoteException {
+//        System.setProperty("java.rmi.server.hostname", "45.77.42.51");
         System.out.println("Connecting to server ...." + txtIPServer.getText());
-        String url = "rmi://" + txtIPServer.getText() + "/server";
+        Registry registry = LocateRegistry.getRegistry("45.77.42.51", 1099);
+        String url = "rmi://" + "45.77.42.51:1099" + "/server";
         System.out.println(url);
-        this.server = (ServerInterface) Naming.lookup(url);
+        this.server = (ServerInterface) registry.lookup("server");
         System.out.println("IP device:" + getIp());
         return true;
     }

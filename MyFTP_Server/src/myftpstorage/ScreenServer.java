@@ -267,8 +267,9 @@ public class ScreenServer extends javax.swing.JFrame {
     }
 
     public void start() throws Exception {
-        System.setProperty("java.rmi.server.hostname " ,"127.0.1.1");
-
+//        System.setProperty("java.rmi.server.hostname ", "127.0.1.1");
+        System.setProperty("java.security.policy", "//securityPolicy");
+//        rmiRegistry = LocateRegistry.getRegistry(getExternalIp(), 1099);
         // registry port 3000
         rmiRegistry = LocateRegistry.createRegistry(1099);
         //Thay thế các ràng buộc, rebind() để tránh lỗi trong trường hợp "server" đã tồn tại trong RMI Registry
