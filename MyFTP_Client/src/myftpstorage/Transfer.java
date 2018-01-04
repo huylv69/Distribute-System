@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class Transfer {
 
-    private final int FILE_SPLIT_SIZE = 1024 * 1024 * 2;//2MB
+    private final int FILE_SPLIT_SIZE = 1024 * 1024 * 10;//10MB
     private ServerInterface server;
     private ScreenClient screenClient;
     private Transmission currentTrans;

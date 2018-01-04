@@ -31,7 +31,7 @@ public class ServerImplement extends UnicastRemoteObject implements ServerInterf
     private final String serverDir;
     private File serverFile;
     private final FileSystemView fileSystemView;
-    private final int FILE_SPLIT_SIZE = 1024 * 1024 * 2; // 1MB
+    private final int FILE_SPLIT_SIZE = 1024 * 1024 * 10; // 10MB
 
     ServerImplement(File defaultFile) throws RemoteException {
         super();
@@ -141,7 +141,7 @@ public class ServerImplement extends UnicastRemoteObject implements ServerInterf
     @Override
     public File createFilePart(String nameFile) throws IOException {
         File file = new File("server_tmp", nameFile);
-        System.out.println("ok");
+        System.out.println("Upload one part done!");
         return file;
     }
 

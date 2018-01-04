@@ -47,7 +47,7 @@ public class ScreenServer extends javax.swing.JFrame {
         initComponents();
 //        int choice = JOptionPane.showConfirmDialog(null, "Do you want to use Local?");
 //        useLocal = choice == JOptionPane.YES_OPTION; // Chọn máy chủ cục bộ
-        System.setProperty("java.rmi.server.hostname ", getExternalIp());
+//        System.setProperty("java.rmi.server.hostname ", getExternalIp());
     }
 
     /**

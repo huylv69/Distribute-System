@@ -5,7 +5,6 @@
  */
 package myftpstorage;
 
-import com.sun.security.ntlm.Client;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.io.File;
@@ -1031,7 +1030,6 @@ public final class ScreenClient extends javax.swing.JFrame {
                 try {
                     desktop.open(file);
                 } catch (IOException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -1053,7 +1051,6 @@ public final class ScreenClient extends javax.swing.JFrame {
                 updateServerDir();
             }
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1126,23 +1123,8 @@ public final class ScreenClient extends javax.swing.JFrame {
             Icon icon;
             icon = null;
             if (column == 0) {
-                try {
-                    if (value.equals("..")) {
-                        icon = server.getFileIcon("");
-                        label.setIcon(server.getFileIcon(""));
-
-                    } else {
-                        icon = server.getFileIcon(currentServerDir + "/" + name);
-                        label.setIcon(icon);
-
-                    }
-                    label.setText(name);
-                    label.setToolTipText((currentServerDir + "/" + name));
-
-                } catch (IOException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
+                label.setText(name);
+                label.setToolTipText((currentServerDir + "/" + name));
             }
             return label;
         }
