@@ -180,7 +180,7 @@ public class ScreenServer extends javax.swing.JFrame {
                     }
                 }
                 // Nếu thư mục tồn tại, trả về địa chỉ ip của máy chủ RMI
-//                System.getProperty("java.rmi.server.hostname " + getIpServer());
+                System.getProperty("java.rmi.server.hostname " + getIpServer());
                 System.out.println("IP server: " + getIpServer());
                 btn_ChooseFile.setText(defaultFile.getAbsolutePath());
                 // Cài đặt quản lý an ninh mạng
@@ -268,12 +268,14 @@ public class ScreenServer extends javax.swing.JFrame {
     }
 
     public void start() throws Exception {
+        System.setProperty("java.rmi.server.hostname " , getExternalIp());
+
         // registry port 3000
         rmiRegistry = LocateRegistry.createRegistry(1099);
         //Thay thế các ràng buộc, rebind() để tránh lỗi trong trường hợp "server" đã tồn tại trong RMI Registry
         rmiRegistry.rebind("server", server);
-        JOptionPane.showMessageDialog(null, "Server Started with IP:  " + getIpServer() + ":1099");
-        txtIP.setText("IP Server : " + getIpServer() + ":1099");
+        JOptionPane.showMessageDialog(null, "Server Started with IP:  " + getExternalIp() + ":1099");
+        txtIP.setText("IP Server : " + getExternalIp() + ":1099");
         isStart = true;
     }
 
